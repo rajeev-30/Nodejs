@@ -1,3 +1,9 @@
-myEmmiter.once("firstevent", (arg1, arg2) => {
-    console.log("Event will be executed only once: ", arg1, arg2);
-});
+if(req.url==='/'){
+        fs.readFileS('example.txt','utf8', (err,data)=>{
+            if(err){
+                res.end(err);
+                return;
+            }
+            res.end(data);
+        })
+    }
