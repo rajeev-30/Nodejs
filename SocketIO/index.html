@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat app</title>
+</head>
+<body>
+    <ul id="list">
+
+    </ul>
+        <form action="" id="form">
+            <input type="text" id="input">
+            <button>Send</button>
+        </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        var userInput = prompt("Please enter your name:");
+        const socket = io();
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const list=document.getElementById('list');
+
+        form.addEventListener('submit', e=>{
+            e.preventDefault();
+            if(input.value){
+                socket.emit('chat msg', input.value, userInput);
+                input.value="";
+            }
+        })
+        
+        socket.emit('login', userInput);
+
+        socket.on('chat msg', (msg, username)=>{
+            const item = document.createElement('li');
+            item.textContent = username+": "+ msg;
+            list.appendChild(item);
+        })
+
+        // socket.on('chat msg', data=>{
+        //     const item = document.createElement('li');
+        //     if(type=='notification'){
+        //         item.textContent = data.message;
+        //         item.style.fontWeight = 'bold';
+        //     }else{
+        //         item.textContent = `${data.username}: ${data.message}`;
+        //     }
+        //     messages.appendChild(item);
+        //     messages.scrollTop = messages.scrollHeight;
+        // });
+
+        socket.on('login', (username)=>{
+            const item = document.createElement('p');
+            item.textContent = username+" has joined!";
+            list.appendChild(item);
+        })
+
+
+    </script>
+</body>
+</html>

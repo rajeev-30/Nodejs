@@ -1,38 +1,28 @@
-// Q2 - Read the data form HTML file and write into a txt file using POST method
+// Q2 - Read the data form HTML file and write into a .txt file using POST method
 
 const express = require('express')
 const fs = require('fs')
 const app = express();
 app.use(express.urlencoded({extended: true}));
 
-
 app.get('/', (req,res)=> {
-    res.send('Server is ready to serve');
-});
-
-app.get('/readfile', (req,res)=> {
-        fs.readFile('MiddleWare/form2.html','utf-8', (err,data)=>{
-            if(err){
-                res.end("There was some error reading file")
-            }
-            else{
-                console.log(req.url);
-                res.end(data);
-            }
-        }); 
-    });
-
-app.get('/submit',(req,res)=>{
-    const name = req.query.name;
-    const email = req.query.email;
-    fs.writeFile('example.txt',`Name: ${name}, Email: ${email}`,'utf-8',(err,data)=>{
-        if(err){
-            console.error("error");
-            return;
-        }
-        res.send('Data saved successfully');
-    })
+    const readStream = fs.createReadStream('MiddleWare/form2.html');
+    readStream.pipe(res);
 })
+
+app.post('/submit',(req,res)=>{
+    console.log(req.body);
+    const name = req.body.name;
+    const email = req.body.email;
+    fs.writeFile('example.txt', name,email, (err) => {
+        if (err) {
+            console.error(err);
+            res.send("check console");
+        } else {
+            res.send("data added successfully");
+        }
+    }); 
+});  
 
 const port = 4000;
 
