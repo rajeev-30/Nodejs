@@ -1,13 +1,18 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-
+require('dotenv').config();
+const path = require('path');
 const app = express();
-const port = 3000;
-
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://rajeevkushwaha1812:class@cluster0.zarxswq.mongodb.net/')
+//Dotenv
+const mongoURI = process.env.MONGO_URI;
+const PORT = process.env.PORT;
+
+//Middle ware
+app.use((express.static(path.join(__dirname, 'public'))));
+mongoose.connect(mongoURI)
 .then (()=> console.log('connected to MongoDB'))
 .catch (err => console.error('Error connnecting to MongoDB: ',err));
 
@@ -39,7 +44,7 @@ user.save()
 .catch(err => res.status(400).json({message: err.message}));
 });
 
-//update
+//update user
 app.put('/update/:id', (req, res) => {
 const userId = req.params.id;
 
@@ -67,4 +72,4 @@ app.delete('/delete/:id', (req, res) => {
 
 });
 
-app.listen(3000,()=> console.log('Server is running on http://localhost:3000'));
+app.listen(PORT,()=> console.log('Server is running on http://localhost:3000'));
